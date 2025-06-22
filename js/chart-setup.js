@@ -1,0 +1,46 @@
+/* chart-setup.js
+ * Chart.js ヒストグラム描画ユーティリティ
+ */
+
+function makeBins(data, bins = 30) {
+  if (data.length === 0) return { labels: [], counts: [] };
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const width = (max - min) / bins;
+
+  const counts = Array(bins).fill(0);
+  data.forEach((v) => {
+    const idx = Math.min(bins - 1, Math.floor((v - min) / width));
+    counts[idx]++;
+  });
+
+  const labels = counts.map(
+    (_, i) =>
+      `${(min + i * width).toFixed(0)}–${(min + (i + 1) * width).toFixed(0)}`
+  );
+
+  return { labels, counts };
+}
+
+export function drawHistogram(canvasId, data, title, bins = 30) {
+  const { labels, counts } = makeBins(data, bins);
+  const ctx = document.getElementById(canvasId).getContext("2d");
+
+  if (window[canvasId]) window[canvasId].destroy();
+
+  window[canvasId] = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{ label: title, data: counts }],
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true } },
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: title },
+      },
+    },
+  });
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>マイジャグラーV 疑似シミュレーター</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="js/chart-setup.js" defer></script>
+  <script src="js/simulator.js" defer></script>
+  <script src="js/main.js" type="module" defer></script>
+</head>
+<body>
+  <h1>マイジャグラーV 疑似シミュレーター</h1>
+
+  <!-- 設定フォーム -->
+  <form id="configForm">
+    <fieldset>
+      <legend>シミュレーション設定</legend>
+
+      <label>
+        シミュレーション回数
+        <input type="number" name="simulations" min="1" value="1000" required />
+      </label>
+
+      <label>
+        1回あたりのゲーム数
+        <input type="number" name="gamesPerSim" min="1" value="8000" required />
+      </label>
+
+      <label>
+        設定値（1〜6）
+        <input type="number" name="setting" min="1" max="6" value="6" required />
+      </label>
+
+      <label>
+        1000円あたりの貸し出し枚数
+        <input type="number" name="coinsPer1000" min="1" value="47" required />
+      </label>
+
+      <label>
+        交換率（枚／1000円）
+        <input type="number" name="exchangeRate" min="1" value="50" required />
+      </label>
+
+      <button type="submit">シミュレーション開始</button>
+    </fieldset>
+  </form>
+
+  <!-- 進行状況 -->
+  <div id="progress" hidden>
+    <progress id="progressBar" value="0" max="100"></progress>
+    <span id="progressText">0 %</span>
+    (<span id="progressCount">0 / 0</span>)
+  </div>
+
+  <!-- 統計結果 -->
+  <section id="stats" hidden>
+    <h2>統計値</h2>
+    <pre id="statsText"></pre>
+  </section>
+
+  <!-- グラフ -->
+  <section id="charts" hidden>
+    <h2>ヒストグラム</h2>
+    <canvas id="investChart"></canvas>
+    <canvas id="coinsChart"></canvas>
+    <canvas id="profitChart"></canvas>
+  </section>
+
+  <!-- CSV ダウンロード -->
+  <section id="download" hidden>
+    <button id="csvBtn">結果 CSV をダウンロード</button>
+  </section>
+</body>
+</html>

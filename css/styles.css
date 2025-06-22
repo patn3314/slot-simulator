@@ -1,0 +1,42 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 2rem;
+  line-height: 1.6;
+}
+
+h1, h2 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+form fieldset {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  max-width: 640px;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input {
+  margin-left: 0.5rem;
+  width: 6rem;
+}
+
+button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+canvas {
+  max-width: 800px;
+  margin: 2rem 0;
+}
+
+#progress {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+}
