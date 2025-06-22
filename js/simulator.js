@@ -107,7 +107,7 @@ async function runSingleSim({
 
   const finalCoins = coins;
   const diffCoins = finalCoins - (invest / 1000) * coinsPer1000;
-  const profitYen = Math.round(finalCoins - (invest / 1000) * exchangeRate);
+  const profitYen = Math.round((finalCoins / coinsPer1000) * 1000 - invest);
 
   return { big, reg, finalCoins, invest, diffCoins, profitYen };
 }
