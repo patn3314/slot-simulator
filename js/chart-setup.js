@@ -1,6 +1,8 @@
 /* chart-setup.js
  * Chart.js ヒストグラム描画
+ * 2025-06-22  maintainAspectRatio=false を追加
  */
+
 function makeBins(data, bins = 30) {
   if (data.length === 0) return { labels: [], counts: [] };
   const min = Math.min(...data);
@@ -34,13 +36,19 @@ export function drawHistogram(chartInstance, canvasId, data, title, bins = 30) {
   } else {
     return new Chart(ctx, {
       type: "bar",
-      data: { labels, datasets: [{ label: title, data: counts }] },
+      data: {
+        labels,
+        datasets: [{ label: title, data: counts }],
+      },
       options: {
         responsive: true,
-        scales: { y: { beginAtZero: true } },
+        maintainAspectRatio: false,   // ★ 追加：CSS 高さを優先
+        scales: {
+          y: { beginAtZero: true },
+        },
         plugins: {
           legend: { display: false },
-          title: { display: true, text: title },
+          title:  { display: true, text: title },
         },
       },
     });
