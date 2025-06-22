@@ -26,6 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let logElem = null;
   const LOG_FLUSH_INTERVAL = 300; // ms
 
+  // Chart instances
+  let investChart = null;
+  let coinsChart = null;
+  let profitChart = null;
+
   /* ---------- ログウインドウ ---------- */
   function openLogWindow() {
     if (!logWin || logWin.closed) {
@@ -111,8 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
     processing.hidden = false;
     await new Promise(requestAnimationFrame);
     renderResults({ setting });
-    processing.hidden = true;
     statsSec.scrollIntoView({ behavior: "smooth" });
+    processing.hidden = true;
   });
 
   /* ---------- 結果描画 ---------- */
@@ -140,9 +145,9 @@ document.addEventListener("DOMContentLoaded", () => {
 [収支]        平均:${sPro.avg} 中央:${sPro.med} 最小:${sPro.min} 最大:${sPro.max}
 `.trim();
 
-    drawHistogram("investChart", invested, "投資額 (円)");
-    drawHistogram("coinsChart",  coins,    "最終所持メダル (枚)");
-    drawHistogram("profitChart", profit,   "収支 (円)");
+    investChart = drawHistogram(investChart, "investChart", invested, "投資額 (円)");
+    coinsChart  = drawHistogram(coinsChart, "coinsChart",  coins,    "最終所持メダル (枚)");
+    profitChart = drawHistogram(profitChart, "profitChart", profit,   "収支 (円)");
 
     statsSec.hidden = charts.hidden = download.hidden = false;
   }

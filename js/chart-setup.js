@@ -22,22 +22,28 @@ function makeBins(data, bins = 30) {
   return { labels, counts };
 }
 
-export function drawHistogram(canvasId, data, title, bins = 30) {
+export function drawHistogram(chartInstance, canvasId, data, title, bins = 30) {
   const { labels, counts } = makeBins(data, bins);
   const ctx = document.getElementById(canvasId).getContext("2d");
 
-  if (window[canvasId]) window[canvasId].destroy();
-
-  window[canvasId] = new Chart(ctx, {
-    type: "bar",
-    data: { labels, datasets: [{ label: title, data: counts }] },
-    options: {
-      responsive: true,
-      scales: { y: { beginAtZero: true } },
-      plugins: {
-        legend: { display: false },
-        title: { display: true, text: title },
+  if (chartInstance) {
+    chartInstance.data.labels = labels;
+    chartInstance.data.datasets[0].data = counts;
+    chartInstance.options.plugins.title.text = title;
+    chartInstance.update();
+    return chartInstance;
+  } else {
+    return new Chart(ctx, {
+      type: "bar",
+      data: { labels, datasets: [{ label: title, data: counts }] },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } },
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: title },
+        },
       },
-    },
-  });
+    });
+  }
 }
