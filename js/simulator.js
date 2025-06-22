@@ -1,14 +1,13 @@
 /* simulator.js
- * シミュレーション本体 & 乱数ロジック
- * （1G ごとのコールバック onGame に対応）
+ * 軽量化・ログ出力間引き対応
  * 2025-06-22
  */
 
-/** --- 乱数ジェネレータ -------------------------------------------------- */
+/* ---------- PRNG ---------- */
 class PRNG {
   constructor(seed) {
     this.x = seed >>> 0;
-    if (this.x === 0) this.x = 0x6d2b79f5; // avoid zero seed
+    if (this.x === 0) this.x = 0x6d2b79f5;
   }
   next() {
     let x = this.x;
@@ -23,21 +22,20 @@ class PRNG {
   }
 }
 
-/** --- CSV ローダ -------------------------------------------------------- */
-function parseCSV(text) {
-  const [header, ...lines] = text.trim().split(/\r?\n/);
-  const cols = header.split(",");
-  return lines.map((l) =>
+/* ---------- CSV ---------- */
+function parseCSV(txt) {
+  const [h, ...ls] = txt.trim().split(/\r?\n/);
+  const cols = h.split(",");
+  return ls.map(l =>
     l.split(",").reduce((o, v, i) => ((o[cols[i]] = v), o), {})
   );
 }
-
-async function loadRoleTable(path = "data/roles.csv") {
-  const res = await fetch(path);
-  return parseCSV(await res.text());
+async function loadRoles(path = "data/roles.csv") {
+  const t = await (await fetch(path)).text();
+  return parseCSV(t);
 }
 
-/** --- 単発シミュレーション --------------------------------------------- */
+/* ---------- 1 シミュレーション ---------- */
 async function runSingleSim({
   simNo,
   games,
@@ -46,18 +44,18 @@ async function runSingleSim({
   exchangeRate,
   roleTable,
   rng,
-  onGame = null,
-  yieldEveryGame = 50, // UI フリーズ回避
+  onGame,
+  yieldEveryGame = 50,
+  logEveryGame = 100,
 }) {
   let coins = 0;
   let invest = 0;
   let big = 0;
   let reg = 0;
 
-  // 指定設定のみ抽出
   const probs = roleTable
-    .filter((r) => Number(r["設定"]) === setting)
-    .map((r) => ({
+    .filter(r => Number(r["設定"]) === setting)
+    .map(r => ({
       name: r["役名"],
       prob: Number(r["出現率"]) / 65536,
       payout: Number(r["獲得枚数"]),
@@ -65,25 +63,22 @@ async function runSingleSim({
       isREG: r["役名"].includes("REG"),
     }));
 
-  // 累積確率テーブル
   const cum = [];
-  probs.reduce((acc, cur) => {
-    const n = acc + cur.prob;
+  probs.reduce((a, c) => {
+    const n = a + c.prob;
     cum.push(n);
     return n;
   }, 0);
 
   for (let g = 0; g < games; g++) {
-    // メダル不足なら追投
     if (coins < 3) {
       invest += 1000;
       coins += coinsPer1000;
     }
     coins -= 3;
 
-    // 抽選
     const r = rng.random();
-    let idx = cum.findIndex((c) => r < c);
+    let idx = cum.findIndex(c => r < c);
     if (idx === -1) idx = cum.length - 1;
     const role = probs[idx];
     coins += role.payout;
@@ -91,8 +86,10 @@ async function runSingleSim({
     if (role.isBIG) big++;
     if (role.isREG) reg++;
 
-    // 1G ログ出力
-    if (onGame) {
+    if (
+      onGame &&
+      ((g + 1) % logEveryGame === 0 || g === games - 1)
+    ) {
       onGame({
         simNo,
         game: g + 1,
@@ -103,7 +100,6 @@ async function runSingleSim({
       });
     }
 
-    // UI 更新のため適宜 yield
     if ((g + 1) % yieldEveryGame === 0) {
       await new Promise(requestAnimationFrame);
     }
@@ -116,43 +112,42 @@ async function runSingleSim({
   return { big, reg, finalCoins, invest, diffCoins, profitYen };
 }
 
-/** --- 複数シミュレーション --------------------------------------------- */
-export async function runSimulations(opts) {
-  const {
-    simulations,
-    gamesPerSim,
-    setting,
-    coinsPer1000,
-    exchangeRate,
-    onProgress = null,
-    onGame = null,
-    roleFile = "data/roles.csv",
-  } = opts;
-
-  const roleTable = await loadRoleTable(roleFile);
+/* ---------- 複数シミュレーション ---------- */
+export async function runSimulations({
+  simulations,
+  gamesPerSim,
+  setting,
+  coinsPer1000,
+  exchangeRate,
+  onProgress,
+  onGame,
+  roleFile = "data/roles.csv",
+  logEveryGame = 100,
+}) {
+  const roleTable = await loadRoles(roleFile);
   const rng = new PRNG(Date.now());
 
   const results = [];
-  const yieldEverySim = Math.max(1, Math.floor(simulations / 100)); // 1% 毎
+  const yieldEverySim = Math.max(1, Math.floor(simulations / 100));
 
   for (let i = 0; i < simulations; i++) {
-    const res = await runSingleSim({
-      simNo: i + 1,
-      games: gamesPerSim,
-      setting,
-      coinsPer1000,
-      exchangeRate,
-      roleTable,
-      rng,
-      onGame,
-    });
-    results.push({ simNo: i + 1, ...res });
-
+    results.push(
+      await runSingleSim({
+        simNo: i + 1,
+        games: gamesPerSim,
+        setting,
+        coinsPer1000,
+        exchangeRate,
+        roleTable,
+        rng,
+        onGame,
+        logEveryGame,
+      })
+    );
     if (onProgress) onProgress(i + 1, simulations);
     if ((i + 1) % yieldEverySim === 0) {
       await new Promise(requestAnimationFrame);
     }
   }
-
   return results;
 }

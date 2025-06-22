@@ -1,5 +1,5 @@
 /* chart-setup.js
- * Chart.js ヒストグラム描画ユーティリティ
+ * Chart.js ヒストグラム描画
  */
 
 function makeBins(data, bins = 30) {
@@ -9,7 +9,7 @@ function makeBins(data, bins = 30) {
   const width = (max - min) / bins;
 
   const counts = Array(bins).fill(0);
-  data.forEach((v) => {
+  data.forEach(v => {
     const idx = Math.min(bins - 1, Math.floor((v - min) / width));
     counts[idx]++;
   });
@@ -30,10 +30,7 @@ export function drawHistogram(canvasId, data, title, bins = 30) {
 
   window[canvasId] = new Chart(ctx, {
     type: "bar",
-    data: {
-      labels,
-      datasets: [{ label: title, data: counts }],
-    },
+    data: { labels, datasets: [{ label: title, data: counts }] },
     options: {
       responsive: true,
       scales: { y: { beginAtZero: true } },

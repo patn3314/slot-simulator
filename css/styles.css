@@ -29,6 +29,7 @@ button {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
   font-size: 1rem;
+  cursor: pointer;
 }
 
 canvas {
@@ -39,4 +40,10 @@ canvas {
 #progress {
   margin-top: 1.5rem;
   font-size: 1rem;
+}
+
+#processing {
+  margin-top: 1.5rem;
+  font-weight: bold;
+  color: #c00;
 }

@@ -4,8 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>マイジャグラーV 疑似シミュレーター</title>
+
+  <!-- Styles -->
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+
+  <!-- App Scripts -->
   <script src="js/chart-setup.js" defer></script>
   <script src="js/simulator.js" defer></script>
   <script src="js/main.js" type="module" defer></script>
@@ -53,6 +59,9 @@
     <span id="progressText">0 %</span>
     (<span id="progressCount">0 / 0</span>)
   </div>
+
+  <!-- 結果集計中表示 -->
+  <div id="processing" hidden>結果を集計中です…</div>
 
   <!-- 統計結果 -->
   <section id="stats" hidden>
