@@ -47,3 +47,16 @@ canvas {
   font-weight: bold;
   color: #c00;
 }
+
+/* Modified layout for 4-column histogram charts */
+#charts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+#charts canvas {
+  max-width: none;
+  width: 100%;
+  height: auto;
+}

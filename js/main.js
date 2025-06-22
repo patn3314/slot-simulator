@@ -19,16 +19,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const charts = document.getElementById("charts");
   const download = document.getElementById("download");
   const csvBtn = document.getElementById("csvBtn");
+  const logBtn = document.getElementById("logBtn");
 
   /* ---------- 状態 ---------- */
   let lastResults = [];
   let logWin = null;
   let logElem = null;
+  let fullLog = "";
   const LOG_FLUSH_INTERVAL = 300; // ms
 
   // Chart instances
   let investChart = null;
   let coinsChart = null;
+  let diffChart = null;
   let profitChart = null;
 
   /* ---------- ログウインドウ ---------- */
@@ -49,7 +52,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   function safeAppend(str) {
-    if (!logElem) return;
+    fullLog += str;
+    if (!logElem || (logWin && logWin.closed)) {
+      if (logWin && logWin.closed) {
+        logWin = null;
+        logElem = null;
+      }
+      return;
+    }
     logElem.textContent += str;
     logWin.scrollTo(0, logWin.document.body.scrollHeight);
   }
@@ -65,7 +75,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const lend     = +fd.get("coinsPer1000");
     const exchRate = +fd.get("exchangeRate");
 
-    openLogWindow();
+    if (logWin && !logWin.closed) {
+      logElem.textContent = "";
+    }
+    fullLog = "";
+    // (Manual open: user can click "ログを表示" to show log window)
+
     safeAppend(`=== START ${new Date().toLocaleString()} ===\n`);
     safeAppend(`条件: 回=${sim} G/回=${games} 設定=${setting}\n\n`);
 
@@ -109,9 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     safeAppend(logBuffer);
     safeAppend("\n=== FINISH ===\n");
 
-    setTimeout(() => {
-      if (logWin && !logWin.closed) logWin.close();
-    }, 500);
+    // Log window is no longer closed automatically; user can close or reopen manually.
 
     processing.hidden = false;
     await new Promise(requestAnimationFrame);
@@ -124,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderResults({ setting }) {
     const invested = lastResults.map(r => r.invest);
     const coins    = lastResults.map(r => r.finalCoins);
+    const diff     = lastResults.map(r => r.diffCoins);
     const profit   = lastResults.map(r => r.profitYen);
 
     const summary = arr => ({
@@ -135,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const sInv = summary(invested);
     const sCoin= summary(coins);
+    const sDiff= summary(diff);
     const sPro = summary(profit);
 
     statsTxt.textContent = `
@@ -142,11 +157,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 [投資額]      平均:${sInv.avg} 中央:${sInv.med} 最小:${sInv.min} 最大:${sInv.max}
 [最終メダル]  平均:${sCoin.avg} 中央:${sCoin.med} 最小:${sCoin.min} 最大:${sCoin.max}
+[差枚数]      平均:${sDiff.avg} 中央:${sDiff.med} 最小:${sDiff.min} 最大:${sDiff.max}
 [収支]        平均:${sPro.avg} 中央:${sPro.med} 最小:${sPro.min} 最大:${sPro.max}
 `.trim();
 
     investChart = drawHistogram(investChart, "investChart", invested, "投資額 (円)");
-    coinsChart  = drawHistogram(coinsChart, "coinsChart",  coins,    "最終所持メダル (枚)");
+    coinsChart  = drawHistogram(coinsChart,  "coinsChart",  coins,    "最終所持メダル (枚)");
+    diffChart   = drawHistogram(diffChart,   "diffChart",   diff,     "差枚数 (枚)");
     profitChart = drawHistogram(profitChart, "profitChart", profit,   "収支 (円)");
 
     statsSec.hidden = charts.hidden = download.hidden = false;
@@ -160,11 +177,21 @@ document.addEventListener("DOMContentLoaded", () => {
       [r.simNo, form.gamesPerSim.value, r.big, r.reg,
        r.diffCoins, r.finalCoins, r.invest].join(",")
     ).join("\n");
-    const blob = new Blob([head + rows], { type:"text/csv" });
+    const blob = new Blob([head + rows], { type: "text/csv" });
     const url  = URL.createObjectURL(blob);
     Object.assign(document.createElement("a"), {
-      href:url, download:"simulation_results.csv"
+      href: url, download: "simulation_results.csv"
     }).click();
     URL.revokeObjectURL(url);
+  });
+
+  /* ---------- ログウインドウ表示ボタン ---------- */
+  logBtn.addEventListener("click", () => {
+    if (logWin && !logWin.closed) {
+      logWin.focus();
+    } else {
+      openLogWindow();
+      if (fullLog) logElem.textContent = fullLog;
+    }
   });
 });

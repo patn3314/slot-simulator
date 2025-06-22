@@ -1,7 +1,6 @@
 /* chart-setup.js
  * Chart.js ヒストグラム描画
  */
-
 function makeBins(data, bins = 30) {
   if (data.length === 0) return { labels: [], counts: [] };
   const min = Math.min(...data);
