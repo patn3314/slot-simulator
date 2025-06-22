@@ -5,21 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>マイジャグラーV 疑似シミュレーター</title>
 
-  <!-- Styles -->
+  <!-- スタイルシート（必ず css/ 配下を指す） -->
   <link rel="stylesheet" href="css/style.css" />
 
-  <!-- Libraries -->
+  <!-- Chart.js（UMD版） -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 
-  <!-- App Scripts -->
-  <script src="js/chart-setup.js" defer></script>
-  <script src="js/simulator.js" defer></script>
-  <script src="js/main.js" type="module" defer></script>
+  <!-- アプリ本体（ES Modules） -->
+  <!-- chart-setup.js / simulator.js は main.js 内で import 済 -->
+  <script type="module" src="js/main.js" defer></script>
 </head>
 <body>
   <h1>マイジャグラーV 疑似シミュレーター</h1>
 
-  <!-- 設定フォーム -->
+  <!-- ── シミュレーション設定フォーム ─────────────────────── -->
   <form id="configForm">
     <fieldset>
       <legend>シミュレーション設定</legend>
@@ -53,28 +52,28 @@
     </fieldset>
   </form>
 
-  <!-- 進行状況 -->
+  <!-- ── 進行状況 ─────────────────────────────────────────── -->
   <div id="progress" hidden>
     <progress id="progressBar" value="0" max="100"></progress>
     <span id="progressText">0 %</span>
     (<span id="progressCount">0 / 0</span>)
   </div>
 
-  <!-- ログ表示ボタン -->
+  <!-- ── ログ表示ボタン ─────────────────────────────────── -->
   <div id="logControl">
     <button id="logBtn" type="button" hidden>ログを表示</button>
   </div>
 
-  <!-- 結果集計中表示 -->
+  <!-- ── 集計中オーバーレイ ─────────────────────────────── -->
   <div id="processing" hidden>結果を集計中です…</div>
 
-  <!-- 統計結果 -->
+  <!-- ── 統計値表示 ─────────────────────────────────────── -->
   <section id="stats" hidden>
     <h2>統計値</h2>
     <pre id="statsText"></pre>
   </section>
 
-  <!-- グラフ -->
+  <!-- ── ヒストグラム（2×2 グリッド） ─────────────────── -->
   <section id="charts" hidden>
     <h2>ヒストグラム</h2>
     <canvas id="investChart"></canvas>
@@ -83,7 +82,7 @@
     <canvas id="profitChart"></canvas>
   </section>
 
-  <!-- CSV ダウンロード -->
+  <!-- ── CSV ダウンロード ───────────────────────────────── -->
   <section id="download" hidden>
     <button id="csvBtn">結果 CSV をダウンロード</button>
   </section>
