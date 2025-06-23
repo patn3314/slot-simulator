@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>マイジャグラーV 疑似シミュレーター</title>
+  <title>マイジャグラーV 疑似シミュレーター (Web Worker版)</title>
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css" />
@@ -13,11 +13,11 @@
 
   <!-- App Scripts -->
   <script src="js/chart-setup.js" defer></script>
-  <script src="js/simulator.js" defer></script>
-  <script src="js/main.js" type="module" defer></script>
+  <script src="js/main-worker.js" type="module" defer></script>
 </head>
 <body>
-  <h1>マイジャグラーV 疑似シミュレーター</h1>
+  <h1>マイジャグラーV 疑似シミュレーター (Web Worker版)</h1>
+  <p><strong>バックグラウンド実行対応:</strong> タブを切り替えてもシミュレーションが継続されます。</p>
 
   <!-- 設定フォーム -->
   <form id="configForm">
@@ -62,7 +62,7 @@
 
   <!-- ログ表示ボタン -->
   <div id="logControl">
-    <button id="logBtn" type="button" hidden>ログを表示</button>
+    <button id="logBtn" type="button" hidden>ログを表示 (Web Worker版では無効)</button>
   </div>
 
   <!-- 結果集計中表示 -->
@@ -84,9 +84,11 @@
       <canvas id="profitChart"></canvas>
     </div>
   </section>
+
   <!-- CSV ダウンロード -->
   <section id="download" hidden>
     <button id="csvBtn">結果 CSV をダウンロード</button>
   </section>
 </body>
 </html>
+

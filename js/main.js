@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!lastResults.length) return;
     const head = "シムNo,ゲーム数,BIG,REG,差枚,最終メダル,投資\n";
     const rows = lastResults.map(r =>
-      [r.simNo, form.gamesPerSim.value, r.big, r.reg,
+      [r.simNo, games, r.big, r.reg,
        r.diffCoins, r.finalCoins, r.invest].join(",")
     ).join("\n");
     const blob = new Blob([head + rows], { type: "text/csv" });
