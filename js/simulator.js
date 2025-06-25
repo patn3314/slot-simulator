@@ -59,7 +59,7 @@ async function runSingleSim({
       name: r["役名"],
       prob: Number(r["出現率"]) / 65536,
       payout: Number(r["獲得枚数"]),
-      isBIG: r["役名"].includes("BB"),
+      isBIG: r["役名"].includes("BIG"),
       isREG: r["役名"].includes("REG"),
     }));
 
