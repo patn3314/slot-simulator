@@ -109,7 +109,7 @@ async function runSingleSim({
   const diffCoins = finalCoins - (invest / 1000) * coinsPer1000;
   const profitYen = Math.round((finalCoins * 1000) / exchangeRate - invest);
 
-  return { simNo, big, reg, finalCoins, invest, diffCoins, profitYen };
+  return { big, reg, finalCoins, invest, diffCoins, profitYen };
 }
 
 /* ---------- 複数シミュレーション ---------- */
@@ -128,7 +128,7 @@ export async function runSimulations({
   const rng = new PRNG(Date.now());
 
   const results = [];
-  const yieldEverySim = Math.max(1, Math.floor(simulations / 1000));
+  const yieldEverySim = Math.max(1, Math.floor(simulations / 100));
 
   for (let i = 0; i < simulations; i++) {
     results.push(

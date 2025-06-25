@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------- 状態 ---------- */
   let lastResults = [];
+  let lastGamesPerSim = 0;
   let logWin = null;
   let logElem = null;
   let fullLog = "";
@@ -74,6 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const setting  = +fd.get("setting");
     const lend     = +fd.get("coinsPer1000");
     const exchRate = +fd.get("exchangeRate");
+
+    lastGamesPerSim = games;
 
     if (logWin && !logWin.closed) {
       logElem.textContent = "";
@@ -174,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!lastResults.length) return;
     const head = "シムNo,ゲーム数,BIG,REG,差枚,最終メダル,投資\n";
     const rows = lastResults.map(r =>
-      [r.simNo, games, r.big, r.reg,
+      [r.simNo, lastGamesPerSim, r.big, r.reg,
        r.diffCoins, r.finalCoins, r.invest].join(",")
     ).join("\n");
     const blob = new Blob([head + rows], { type: "text/csv" });
