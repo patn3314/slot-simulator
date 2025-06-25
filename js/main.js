@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- CSV ダウンロード ---------- */
   csvBtn.addEventListener("click", () => {
     if (!lastResults.length) return;
-    const head = "シムNo,ゲーム数,BIG,REG,差枚,最終メダル,投資\n";
+    const head = "No,ゲーム数,BIG,REG,差枚,最終メダル,投資\n";
     const rows = lastResults.map(r =>
       [r.simNo, lastGamesPerSim, r.big, r.reg,
        r.diffCoins, r.finalCoins, r.invest].join(",")

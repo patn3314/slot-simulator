@@ -59,7 +59,7 @@ async function runSingleSim({
       name: r["役名"],
       prob: Number(r["出現率"]) / 65536,
       payout: Number(r["獲得枚数"]),
-      isBIG: r["役名"].includes("BIG"),
+      isBIG: r["役名"].includes("BB"),
       isREG: r["役名"].includes("REG"),
     }));
 
@@ -109,7 +109,7 @@ async function runSingleSim({
   const diffCoins = finalCoins - (invest / 1000) * coinsPer1000;
   const profitYen = Math.round((finalCoins * 1000) / exchangeRate - invest);
 
-  return { big, reg, finalCoins, invest, diffCoins, profitYen };
+  return { simNo, big, reg, finalCoins, invest, diffCoins, profitYen };
 }
 
 /* ---------- 複数シミュレーション ---------- */
@@ -128,7 +128,7 @@ export async function runSimulations({
   const rng = new PRNG(Date.now());
 
   const results = [];
-  const yieldEverySim = Math.max(1, Math.floor(simulations / 100));
+  const yieldEverySim = Math.max(1, Math.floor(simulations / 1000));
 
   for (let i = 0; i < simulations; i++) {
     results.push(
