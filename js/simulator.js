@@ -121,10 +121,10 @@ export async function runSimulations({
   exchangeRate,
   onProgress,
   onGame,
-  roleFile = "data/roles.csv",
+  machine = "myV.csv",
   logEveryGame = 100,
 }) {
-  const roleTable = await loadRoles(roleFile);
+  const roleTable = await loadRoles(`data/${machine}`);
   const rng = new PRNG(Date.now());
 
   const results = [];

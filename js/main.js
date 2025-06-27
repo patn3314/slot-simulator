@@ -73,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const sim      = +fd.get("simulations");
     const games    = +fd.get("gamesPerSim");
     const setting  = +fd.get("setting");
+    const machine  = fd.get("machineSelect");
     const lend     = +fd.get("coinsPer1000");
     const exchRate = +fd.get("exchangeRate");
 
@@ -100,6 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
       simulations: sim,
       gamesPerSim: games,
       setting,
+      machine,
       coinsPer1000: lend,
       exchangeRate: exchRate,
       logEveryGame: 100,

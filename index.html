@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>マイジャグラーV 疑似シミュレーター</title>
+  <title>ジャグラー疑似シミュレーター</title>
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css" />
@@ -17,7 +17,7 @@
   <script src="js/main.js" type="module" defer></script>
 </head>
 <body>
-  <h1>マイジャグラーV 疑似シミュレーター</h1>
+  <h1>ジャグラー疑似シミュレーター</h1>
 
   <!-- 設定フォーム -->
   <form id="configForm">
@@ -32,6 +32,20 @@
       <label>
         1回あたりのゲーム数
         <input type="number" name="gamesPerSim" min="1" value="8000" required />
+      </label>
+
+      <label>
+        機種選択
+        <select name="machineSelect" id="machineSelect">
+          <option value="myV.csv">マイジャグラーV</option>
+          <option value="im.csv">アイムジャグラー</option>
+          <option value="happyVⅢ.csv">ハッピージャグラーVⅢ</option>
+          <option value="gogo3.csv">ゴーゴージャグラー3</option>
+          <option value="funky2.csv">ファンキージャグラー2</option>
+          <option value="mr.csv">ミスタージャグラー</option>
+          <option value="ultramiracle.csv">ウルトラミラクルジャグラー</option>
+          <option value="girles2.csv">ジャグラーガールズ2</option>
+        </select>
       </label>
 
       <label>
